@@ -1,0 +1,36 @@
+version: '3'
+services:
+  sedna_stack:
+    container_name: php
+    build: ./docker/php/
+    image: julienhedoux/php:gke
+    ports:
+      - 80:80
+    volumes:
+      - ".:/var/www/html"
+      - "./docker/php/config/etc/apache2/sites-available:/etc/apache2/sites-available"
+    networks:
+      - ja_network
+
+  sedna_db:
+    container_name: db
+    #build: ./docker/mysql/5.7/
+    image: mysql
+    volumes:
+      - "ja_db_storage:/var/lib/mysql:rw"
+    networks:
+      - ja_network
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+
+networks:
+  ja_network:
+    driver: bridge
+
+volumes:
+  ja_db_storage:
+    driver: local
